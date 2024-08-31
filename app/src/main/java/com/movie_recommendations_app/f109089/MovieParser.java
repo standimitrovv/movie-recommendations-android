@@ -18,8 +18,15 @@ public class MovieParser {
                 String id = movieJson.getString("id");
                 String title = movieJson.getString("title");
                 String overview = movieJson.getString("overview");
+                String posterUrl = movieJson.getString("poster_path");
 
-                Movie movie = new Movie(id, title, overview);
+                Movie movie = new Movie(
+                        id,
+                        title,
+                        overview,
+                        "https://image.tmdb.org/t/p/original"+ posterUrl,
+                        false
+                );
                 movies.add(movie);
             }
         } catch (Exception e) {

@@ -18,7 +18,7 @@ import java.net.HttpURLConnection;
 
 public class MovieDetailsFragment extends Fragment {
 
-    private static final String ARG_MOVIE_ID = "movie_id";
+    private static final String ARG_MOVIE_ID = "533535";
     private String movieId;
     private MovieDatabaseHelper databaseHelper;
     private TextView movieTitleTextView;
@@ -64,7 +64,8 @@ public class MovieDetailsFragment extends Fragment {
                 databaseHelper.removeFavoriteMovie(movieId);
                 favoriteButton.setText("Add to Favorites");
             } else {
-                databaseHelper.addFavoriteMovie(new Movie(movieId, movieTitleTextView.getText().toString(), movieOverviewTextView.getText().toString()));
+                Movie movie = new Movie(movieId, movieTitleTextView.getText().toString(), movieOverviewTextView.getText().toString(), "", true);
+                databaseHelper.addFavoriteMovie(movie);
                 favoriteButton.setText("Remove from Favorites");
             }
         });
@@ -78,7 +79,7 @@ public class MovieDetailsFragment extends Fragment {
             BufferedReader reader = null;
 
             try {
-                URL url = new URL("https://api.themoviedb.org/3/movie/" + movieId + "?api_key=YOUR_API_KEY&language=en-US");
+                URL url = new URL("https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + BuildConfig.TMDB_API_KEY + "&language=en-US");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -90,11 +91,6 @@ public class MovieDetailsFragment extends Fragment {
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
-
-                String jsonResponse = response.toString();
-                JSONObject movieJson = new JSONObject(jsonResponse);
-                String title = movieJson.getString("title");
-                String overview = movieJson.getString("overview");
 
                 getActivity().runOnUiThread(() -> {
                     if (databaseHelper.isFavorite(movieId)) {

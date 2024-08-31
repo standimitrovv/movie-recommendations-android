@@ -7,7 +7,7 @@ import java.net.URL;
 
 public class MovieApiClient {
 
-    private static final String API_KEY = "YOUR_API_KEY";
+    private static final String API_KEY = BuildConfig.TMDB_API_KEY;
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY + "&language=en-US&page=1";
 
     public String getPopularMovies() {

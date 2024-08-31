@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.main, movieListFragment);
             fragmentTransaction.commit();
+
         }
 
         Intent serviceIntent = new Intent(this, MovieUpdateService.class);

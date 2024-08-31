@@ -14,6 +14,8 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_OVERVIEW = "overview";
+    private static final String COLUMN_POSTER_URL = "poster-url";
+    private static final String COLUMN_FAVORITE = "favorite";
 
     public MovieDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,7 +41,9 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, movie.getId());
         values.put(COLUMN_TITLE, movie.getTitle());
-        values.put(COLUMN_OVERVIEW, movie.getOverview());
+        values.put(COLUMN_OVERVIEW, movie.getDescription());
+        values.put(COLUMN_POSTER_URL, movie.getPosterUrl());
+        values.put(COLUMN_FAVORITE, movie.getIsFavorite());
 
         long result = db.insert(TABLE_NAME, null, values);
         return result != -1;

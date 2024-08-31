@@ -4,18 +4,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
 
     private List<Movie> movies;
-    private OnMovieClickListener listener;
 
-    public MovieListAdapter(List<Movie> movies, OnMovieClickListener listener) {
+    public MovieListAdapter(List<Movie> movies) {
         this.movies = movies;
-        this.listener = listener;
     }
 
     @NonNull
@@ -29,8 +33,28 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Movie movie = movies.get(position);
+
         holder.titleTextView.setText(movie.getTitle());
-        holder.itemView.setOnClickListener(v -> listener.onMovieClick(movie));
+        holder.titleTextView.setText(movie.getTitle());
+        holder.descriptionTextView.setText(movie.getDescription());
+
+        Glide
+                .with(holder.itemView.getContext())
+                .load(movie.getPosterUrl())
+                .into(holder.posterImageView);
+
+        holder.favoriteButton.setOnClickListener(v -> {
+            boolean isFavorite = movie.getIsFavorite();
+            movie.setIsFavorite(!isFavorite);
+
+            if (!isFavorite) {
+                holder.favoriteButton.setImageResource(R.drawable.icon_heart_filled);
+                addToFavorites(movie);
+            } else {
+                holder.favoriteButton.setImageResource(R.drawable.icon_heart);
+                removeFromFavorites(movie.getId());
+            }
+        });
     }
 
     @Override
@@ -38,16 +62,25 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         return movies.size();
     }
 
-    public interface OnMovieClickListener {
-        void onMovieClick(Movie movie);
-    }
-
     static class MovieViewHolder extends RecyclerView.ViewHolder {
+        ImageView posterImageView;
         TextView titleTextView;
+        TextView descriptionTextView;
+        ImageButton favoriteButton;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
+            posterImageView = itemView.findViewById(R.id.movie_poster);
             titleTextView = itemView.findViewById(R.id.movie_title);
+            descriptionTextView = itemView.findViewById(R.id.movie_description);
+            favoriteButton = itemView.findViewById(R.id.favorite_button);
         }
+    }
+
+    private void addToFavorites(Movie movie) {
+    }
+
+    private void removeFromFavorites(String movieId){
+
     }
 }
