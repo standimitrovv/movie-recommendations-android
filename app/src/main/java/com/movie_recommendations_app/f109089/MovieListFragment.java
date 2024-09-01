@@ -28,7 +28,7 @@ public class MovieListFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new MovieListAdapter(movieList);
+        adapter = new MovieListAdapter(movieList, getActivity());
         recyclerView.setAdapter(adapter);
 
         loadMovies();

@@ -1,5 +1,6 @@
 package com.movie_recommendations_app.f109089;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,11 @@ import java.util.List;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
 
     private List<Movie> movies;
+    private MovieDatabaseHelper db;
 
-    public MovieListAdapter(List<Movie> movies) {
+    public MovieListAdapter(List<Movie> movies, Context context) {
         this.movies = movies;
+        this.db = new MovieDatabaseHelper(context);
     }
 
     @NonNull
@@ -43,6 +46,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
                 .load(movie.getPosterUrl())
                 .into(holder.posterImageView);
 
+        holder.favoriteButton.setImageResource(movie.getIsFavorite() ? R.drawable.icon_heart_filled : R.drawable.icon_heart);
+
         holder.favoriteButton.setOnClickListener(v -> {
             boolean isFavorite = movie.getIsFavorite();
             movie.setIsFavorite(!isFavorite);
@@ -52,6 +57,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
                 addToFavorites(movie);
             } else {
                 holder.favoriteButton.setImageResource(R.drawable.icon_heart);
+                movie.setIsFavorite(false);
                 removeFromFavorites(movie.getId());
             }
         });
@@ -78,9 +84,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     }
 
     private void addToFavorites(Movie movie) {
+        movie.setIsFavorite(true);
+        db.addFavoriteMovie(movie);
     }
 
     private void removeFromFavorites(String movieId){
-
+        db.removeFavoriteMovie(movieId);
     }
 }

@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movies.db";
@@ -14,7 +17,7 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_OVERVIEW = "overview";
-    private static final String COLUMN_POSTER_URL = "poster-url";
+    private static final String COLUMN_POSTER_URL = "poster_url";
     private static final String COLUMN_FAVORITE = "favorite";
 
     public MovieDatabaseHelper(Context context) {
@@ -26,7 +29,9 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " TEXT PRIMARY KEY, " +
                 COLUMN_TITLE + " TEXT, " +
-                COLUMN_OVERVIEW + " TEXT)";
+                COLUMN_OVERVIEW + " TEXT, " +
+                COLUMN_POSTER_URL + " TEXT, " +
+                COLUMN_FAVORITE + " INTEGER DEFAULT 0);";
         db.execSQL(createTable);
     }
 
@@ -46,12 +51,17 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_FAVORITE, movie.getIsFavorite());
 
         long result = db.insert(TABLE_NAME, null, values);
+        db.close();
         return result != -1;
     }
 
     public boolean removeFavoriteMovie(String movieId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, COLUMN_ID + "=?", new String[]{movieId}) > 0;
+
+        int res = db.delete(TABLE_NAME, COLUMN_ID + "=?", new String[]{movieId});
+        db.close();
+
+        return  res > 0;
     }
 
     public boolean isFavorite(String movieId) {
@@ -65,8 +75,46 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    public Cursor getAllFavoriteMovies() {
+    public List<Movie> getAllFavoriteMovies() {
+        List<Movie> movies = new ArrayList<>();
+
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.query(TABLE_NAME, null, null, null, null, null, null);
+
+        String[] columns = {
+                COLUMN_ID,
+                COLUMN_TITLE,
+                COLUMN_OVERVIEW,
+                COLUMN_POSTER_URL,
+                COLUMN_FAVORITE
+        };
+
+        String selection = COLUMN_FAVORITE + " = ?";
+        String[] selectionArgs = { "1" };
+
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_OVERVIEW));
+            String posterUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_POSTER_URL));
+            boolean isFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FAVORITE)) == 1;
+
+            Movie movie = new Movie(id, title, description, posterUrl, isFavorite);
+            movies.add(movie);
+        }
+        cursor.close();
+        db.close();
+
+        return movies;
+
     }
 }
