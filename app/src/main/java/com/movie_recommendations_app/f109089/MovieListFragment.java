@@ -2,6 +2,7 @@ package com.movie_recommendations_app.f109089;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,14 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private MovieListAdapter adapter;
-    private List<Movie> movieList = new ArrayList<>();
+
+    private MoviesViewModel viewModel;
 
     public MovieListFragment() {}
 
@@ -28,8 +29,15 @@ public class MovieListFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new MovieListAdapter(movieList, getActivity());
+
+        viewModel = new ViewModelProvider(requireActivity()).get(MoviesViewModel.class);
+
+        adapter = new MovieListAdapter(viewModel);
         recyclerView.setAdapter(adapter);
+
+        viewModel.getAllMovies().observe(getViewLifecycleOwner(), movies -> {
+            adapter.setMovies(movies);
+        });
 
         loadMovies();
 
@@ -46,8 +54,7 @@ public class MovieListFragment extends Fragment {
                     List<Movie> movies = MovieParser.parseMovies(response);
 
                     getActivity().runOnUiThread(() -> {
-                        movieList.clear();
-                        movieList.addAll(movies);
+                        viewModel.setAllMovies(movies);
                         adapter.notifyDataSetChanged();
                     });
                 } catch (Exception e) {

@@ -13,16 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
 
+    private final MoviesViewModel viewModel;
     private List<Movie> movies;
-    private MovieDatabaseHelper db;
 
-    public MovieListAdapter(List<Movie> movies, Context context) {
+    public MovieListAdapter(MoviesViewModel viewModel ) {
+        this.movies = new ArrayList<>();
+        this.viewModel = viewModel;
+    }
+
+    public void setMovies(List<Movie> movies) {
         this.movies = movies;
-        this.db = new MovieDatabaseHelper(context);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -54,11 +60,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
             if (!isFavorite) {
                 holder.favoriteButton.setImageResource(R.drawable.icon_heart_filled);
-                addToFavorites(movie);
+                viewModel.addMovieToFavorites(movie);
             } else {
                 holder.favoriteButton.setImageResource(R.drawable.icon_heart);
-                movie.setIsFavorite(false);
-                removeFromFavorites(movie.getId());
+                viewModel.removeFromFavorites(movie.getId());
             }
         });
     }
@@ -81,14 +86,5 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             descriptionTextView = itemView.findViewById(R.id.movie_description);
             favoriteButton = itemView.findViewById(R.id.favorite_button);
         }
-    }
-
-    private void addToFavorites(Movie movie) {
-        movie.setIsFavorite(true);
-        db.addFavoriteMovie(movie);
-    }
-
-    private void removeFromFavorites(String movieId){
-        db.removeFavoriteMovie(movieId);
     }
 }
