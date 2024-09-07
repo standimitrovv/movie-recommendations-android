@@ -14,10 +14,10 @@ interface ApiCallback {
 public class MovieApiClient {
     private static final String AUTH_TOKEN = BuildConfig.AUTH_TOKEN;
 
-    public void getPopularMovies(final ApiCallback apiCallback) {
+    public void getPopularMovies(int page, final ApiCallback apiCallback) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://api.themoviedb.org/3/movie/popular?language=en-US&page=1")
+                .url("https://api.themoviedb.org/3/movie/popular?language=en-US&page=" + page)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization", "Bearer " + AUTH_TOKEN)
