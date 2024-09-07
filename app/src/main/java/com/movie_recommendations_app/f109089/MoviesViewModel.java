@@ -13,12 +13,15 @@ public class MoviesViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Movie>> allMovies;
     private MutableLiveData<List<Movie>> favoriteMovies;
+    private MutableLiveData<List<Movie>> recommendedMovies;
 
     public MoviesViewModel(Application application) {
         super(application);
         dbHelper = new MovieDatabaseHelper(application);
+
         allMovies = new MutableLiveData<>();
         favoriteMovies = new MutableLiveData<>();
+        recommendedMovies = new MutableLiveData<>();
     }
 
     public LiveData<List<Movie>> getAllMovies() {
@@ -29,8 +32,14 @@ public class MoviesViewModel extends AndroidViewModel {
         return this.favoriteMovies;
     }
 
+    public LiveData<List<Movie>> getRecommendedMovies() { return recommendedMovies; }
+
     public void setAllMovies(List<Movie> movies) {
         allMovies.setValue(movies);
+    }
+
+    public void setRecommendedMovies(List<Movie> movies) {
+        this.recommendedMovies.setValue(movies);
     }
 
     public void loadFavoriteMovies() {

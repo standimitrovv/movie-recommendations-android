@@ -18,6 +18,7 @@ public class MovieParser {
                 String id = movieJson.getString("id");
                 String title = movieJson.getString("title");
                 String overview = movieJson.getString("overview");
+                int genreId = movieJson.getJSONArray("genre_ids").getInt(0);
                 String posterUrl = movieJson.getString("poster_path");
 
                 Movie movie = new Movie(
@@ -25,6 +26,7 @@ public class MovieParser {
                         title,
                         overview,
                         "https://image.tmdb.org/t/p/original"+ posterUrl,
+                        genreId,
                         false
                 );
                 movies.add(movie);

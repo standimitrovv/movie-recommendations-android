@@ -4,9 +4,15 @@
         android:id="@+id/navigation_all_movies"
         android:icon="@drawable/icon_all_movies"
         android:title="@string/menu_first_tab" />
+
+    <item
+        android:id="@+id/navigation_recommendations"
+        android:icon="@drawable/icon_recommended_movies"
+        android:title="@string/menu_second_tab" />
+
     <item
         android:id="@+id/navigation_favorites"
         android:icon="@drawable/icon_favorite_movies"
-        android:title="@string/menu_second_tab" />
+        android:title="@string/menu_third_tab" />
 
 </menu>

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new MovieListFragment();
             } else if (id == R.id.navigation_favorites) {
                 selectedFragment = new FavoriteMoviesFragment();
+            } else if (id == R.id.navigation_recommendations) {
+                selectedFragment = new RecommendedMoviesFragment();
             }
 
             if (selectedFragment != null) {

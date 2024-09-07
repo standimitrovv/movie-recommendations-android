@@ -64,7 +64,7 @@ public class MovieDetailsFragment extends Fragment {
                 databaseHelper.removeFavoriteMovie(movieId);
                 favoriteButton.setText("Add to Favorites");
             } else {
-                Movie movie = new Movie(movieId, movieTitleTextView.getText().toString(), movieOverviewTextView.getText().toString(), "", true);
+                Movie movie = new Movie(movieId, movieTitleTextView.getText().toString(), movieOverviewTextView.getText().toString(), "", 0,true);
                 databaseHelper.addFavoriteMovie(movie);
                 favoriteButton.setText("Remove from Favorites");
             }

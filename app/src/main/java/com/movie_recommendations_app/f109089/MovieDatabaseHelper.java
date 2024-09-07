@@ -12,12 +12,13 @@ import java.util.List;
 public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movies.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_NAME = "favorite_movies";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_OVERVIEW = "overview";
     private static final String COLUMN_POSTER_URL = "poster_url";
+    private static final String COLUMN_GENRE_ID = "genre_id";
     private static final String COLUMN_FAVORITE = "favorite";
 
     public MovieDatabaseHelper(Context context) {
@@ -31,6 +32,7 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TITLE + " TEXT, " +
                 COLUMN_OVERVIEW + " TEXT, " +
                 COLUMN_POSTER_URL + " TEXT, " +
+                COLUMN_GENRE_ID + " INTEGER DEFAULT 0, " +
                 COLUMN_FAVORITE + " INTEGER DEFAULT 0);";
         db.execSQL(createTable);
     }
@@ -48,6 +50,7 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TITLE, movie.getTitle());
         values.put(COLUMN_OVERVIEW, movie.getDescription());
         values.put(COLUMN_POSTER_URL, movie.getPosterUrl());
+        values.put(COLUMN_GENRE_ID, movie.getGenreId());
         values.put(COLUMN_FAVORITE, movie.getIsFavorite());
 
         long result = db.insert(TABLE_NAME, null, values);
@@ -85,6 +88,7 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TITLE,
                 COLUMN_OVERVIEW,
                 COLUMN_POSTER_URL,
+                COLUMN_GENRE_ID,
                 COLUMN_FAVORITE
         };
 
@@ -106,15 +110,15 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
             String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
             String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_OVERVIEW));
             String posterUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_POSTER_URL));
+            int genreId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_GENRE_ID));
             boolean isFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FAVORITE)) == 1;
 
-            Movie movie = new Movie(id, title, description, posterUrl, isFavorite);
+            Movie movie = new Movie(id, title, description, posterUrl, genreId, isFavorite);
             movies.add(movie);
         }
         cursor.close();
         db.close();
 
         return movies;
-
     }
 }
