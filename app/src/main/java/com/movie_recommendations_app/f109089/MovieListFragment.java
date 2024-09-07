@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class MovieListFragment extends Fragment {
             adapter.setMovies(movies);
         });
 
-        loadMovies();
+        this.loadMovies();
 
         return view;
     }
@@ -47,23 +48,23 @@ public class MovieListFragment extends Fragment {
     private void loadMovies() {
         new Thread(() -> {
             MovieApiClient apiClient = new MovieApiClient();
-            String response = apiClient.getPopularMovies();
-
-            if (response != null) {
-                try {
-                    List<Movie> movies = MovieParser.parseMovies(response);
+            apiClient.getPopularMovies(new ApiCallback() {
+                @Override
+                public void onSuccess(List<Movie> movies) {
+                    if(movies == null || movies.isEmpty()) { return; }
 
                     getActivity().runOnUiThread(() -> {
                         viewModel.setAllMovies(movies);
                         adapter.notifyDataSetChanged();
                     });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    showToast("Error parsing movie data");
                 }
-            } else {
-                showToast("Failed to fetch data");
-            }
+
+                @Override
+                public void onFailure(String body) {
+                    Log.e("FAIL", "The popular movies failed to fetch: " + body);
+                    showToast("Failed to fetch data");
+                }
+            });
         }).start();
     }
 
