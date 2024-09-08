@@ -14,21 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FavoriteMoviesFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private MovieListAdapter adapter;
-    private MoviesViewModel viewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favorite_movies_fragment, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view_favorite_movies);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_favorite_movies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        viewModel = new ViewModelProvider(this).get(MoviesViewModel.class);
+        MoviesViewModel viewModel = new ViewModelProvider(this).get(MoviesViewModel.class);
 
-        adapter = new MovieListAdapter(viewModel);
+        adapter = new MovieListAdapter(viewModel, getContext());
         recyclerView.setAdapter(adapter);
 
         viewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), favoriteMovies -> {

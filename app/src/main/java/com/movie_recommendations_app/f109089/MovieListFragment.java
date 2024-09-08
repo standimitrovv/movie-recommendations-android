@@ -19,7 +19,6 @@ import java.util.List;
 
 public class MovieListFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private MovieListAdapter adapter;
 
     private MoviesViewModel viewModel;
@@ -37,14 +36,14 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         progressBar = view.findViewById(R.id.progress_bar);
 
         viewModel = new ViewModelProvider(requireActivity()).get(MoviesViewModel.class);
 
-        adapter = new MovieListAdapter(viewModel);
+        adapter = new MovieListAdapter(viewModel, getContext());
         recyclerView.setAdapter(adapter);
 
         viewModel.getAllMovies().observe(getViewLifecycleOwner(), movies -> {

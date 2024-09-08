@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.List;
 
 public class RecommendedMoviesFragment extends Fragment {
-    private RecyclerView recyclerView;
     private MovieListAdapter adapter;
     private MoviesViewModel viewModel;
 
@@ -27,11 +26,11 @@ public class RecommendedMoviesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recommended_movies_fragment, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view_recommended_movies);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_recommended_movies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         viewModel = new ViewModelProvider(requireActivity()).get(MoviesViewModel.class);
-        adapter = new MovieListAdapter(viewModel);
+        adapter = new MovieListAdapter(viewModel, getContext());
         recyclerView.setAdapter(adapter);
 
         viewModel.getRecommendedMovies().observe(getViewLifecycleOwner(), recommendedMovies -> {

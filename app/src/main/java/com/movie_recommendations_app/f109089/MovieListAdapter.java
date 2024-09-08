@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +21,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     private final MoviesViewModel viewModel;
     private List<Movie> movies;
+    private final Context context;
 
-    public MovieListAdapter(MoviesViewModel viewModel ) {
+    public MovieListAdapter(MoviesViewModel viewModel, Context ctx) {
         this.movies = new ArrayList<>();
         this.viewModel = viewModel;
+        this.context = ctx;
     }
 
     public void setMovies(List<Movie> movies) {
@@ -61,11 +64,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             if (!isFavorite) {
                 holder.favoriteButton.setImageResource(R.drawable.icon_heart_filled);
                 viewModel.addMovieToFavorites(movie);
+                showToast("\"" + movie.getTitle() + "\" was added to favorites!");
             } else {
                 holder.favoriteButton.setImageResource(R.drawable.icon_heart);
                 viewModel.removeFromFavorites(movie.getId());
+                showToast("\"" + movie.getTitle() + "\" was removed from favorites");
             }
         });
+    }
+
+    private void showToast(final String message) {
+        Toast.makeText(this.context, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
