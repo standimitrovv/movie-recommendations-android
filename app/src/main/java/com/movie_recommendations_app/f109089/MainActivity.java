@@ -1,6 +1,7 @@
 package com.movie_recommendations_app.f109089;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,5 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, MovieUpdateService.class);
         startService(serviceIntent);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }
